@@ -6,7 +6,7 @@
 <script>
 import MorseButton from './components/MorseButton.vue'
 import SpaceBarHandler from './components/SpaceBarHandler.vue'
-import { Oscillator} from "tone";
+import * as Tone from "tone";
 import { ref } from 'vue';
 
 export default {
@@ -16,20 +16,31 @@ export default {
     SpaceBarHandler
   },
   setup() {
-    const oscillator = new Oscillator(440, "sine").toDestination();
+    const oscillator = new Tone.Oscillator(440, "sine").toDestination();
     let isPressed = ref(false);
+    let audioInitialized = ref(false);
 
     const handleMorseButtonDown = () => {
-      isPressed = true;
-      oscillator.start();
+      isPressed.value = true;
+      if (audioInitialized.value == false) {
+        Tone.start().then(() => {
+          console.log('audio initialized');
+          audioInitialized.value = true
+        });
+      }
+      else {
+        oscillator.start();
+      }
     }
 
     const handleMorseButtonUp = () => {
-      isPressed = false;
-      oscillator.stop();
+      isPressed.value = false;
+      if (audioInitialized.value == true) {
+        oscillator.stop();
+      }
     }
 
-    return { handleMorseButtonDown, handleMorseButtonUp, oscillator, isPressed };
+    return { handleMorseButtonDown, handleMorseButtonUp, oscillator, isPressed, audioInitialized};
   },
 }
 </script>

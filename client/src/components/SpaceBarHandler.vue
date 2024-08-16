@@ -4,7 +4,6 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
 import { useKeypress } from 'vue3-keypress'
 
 const emit = defineEmits(['up', 'down']);
